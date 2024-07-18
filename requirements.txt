@@ -1,8 +1,9 @@
 datetime
 yfinance
-numpy
+numpy>=1.21
 pandas
 statsmodels
 pyfolio
 matplotlib
 streamlit
+
