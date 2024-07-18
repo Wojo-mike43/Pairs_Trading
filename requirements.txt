@@ -1,0 +1,8 @@
+datetime
+yfinance
+numpy
+pandas
+statsmodels
+matplotlib
+streamlit
+pyfolio
