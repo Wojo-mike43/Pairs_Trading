@@ -3,7 +3,7 @@ yfinance
 numpy>=1.21
 pandas
 statsmodels
-pyfolio reloaded
+pyfolio_reloaded
 matplotlib
 streamlit
 
