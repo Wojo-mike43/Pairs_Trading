@@ -3,7 +3,7 @@ import yfinance as yf
 import numpy as np
 import pandas as pd
 import statsmodels.api as sm
-from statsmodels.tsa.stattools import coint
+from statsmodels.tsa.vector_ar.vecm import coint_johansen
 import pyfolio as pf
 import matplotlib.pyplot as plt
 import streamlit as st
@@ -21,13 +21,15 @@ class Setup:
         self.data = stocks_data['Close']
         return self.data
 
-    def calc_coint(self):
-        self.stock1_data = self.data.iloc[:, 0]
-        self.stock2_data = self.data.iloc[:, 1]
-        _, pvalue, crit = coint(self.stock1_data, self.stock2_data)
-        return pvalue, crit[1]
+    def calc_johansen(self):
+        result = coint_johansen(self.data, det_order=0, k_ar_diff=1)
+        trace_stat = result.lr1
+        crit_value = result.cvt[:, 1]
+        return trace_stat, crit_value
 
     def calc_spread(self): #eliminate lookback bias here
+        self.stock1_data = self.data.iloc[:, 0]
+        self.stock2_data = self.data.iloc[:, 1]
         ln_stock_1 = np.log(self.stock1_data)
         ln_stock_2 = np.log(self.stock2_data)
         stock1_c = sm.add_constant(ln_stock_1)
@@ -60,8 +62,8 @@ class TradeBacktest:
         self.port.loc[self.port['zscore'] > 1.5, 'signal'] = -1
         self.port.loc[self.port['zscore'] < -1.5, 'signal'] = 1
         self.port.loc[(self.port['zscore'] >= -0.5) & (self.port['zscore'] <= 0.5), 'signal'] = 0
+        
         self.port['position'] = self.port['signal']
-
         for i in range(len(self.port)):
             if self.port['position'].iloc[i] == 2:
                 self.port.at[self.port.index[i], 'position'] = self.port['position'].iloc[i - 1]
@@ -72,7 +74,6 @@ class TradeBacktest:
         self.port['strategy_return'] = self.port['position'] * (self.port['s1_return'] - self.port['s2_return'])
         self.port['strategy_return'] = self.port['strategy_return'].fillna(0)
         self.port['cumulative_return'] = (self.port['strategy_return'] + 1).cumprod()
-
         return self.port['strategy_return']
 
     @staticmethod
@@ -84,23 +85,24 @@ class TradeBacktest:
     def plot(strategy_returns):
         fig_names = ['cumulative_returns.png', 'rolling_sharpe.png', 'drawdown.png']
 
-        #Cumulative Returns Plot
+        #returns
         plt.figure(figsize=(14, 8))
         pf.plotting.plot_rolling_returns(strategy_returns)
         plt.savefig(fig_names[0])
         plt.close()
-
-        #Rolling Sharpe Plot
+        
+        #Rolling Sharpe
         plt.figure(figsize=(14, 8))
         pf.plotting.plot_rolling_sharpe(strategy_returns)
         plt.savefig(fig_names[1])
         plt.close()
 
-        #Drawdown Plot
+        #Drawdown
         plt.figure(figsize=(14, 8))
         pf.plotting.plot_drawdown_periods(strategy_returns)
         plt.savefig(fig_names[2])
         plt.close()
+
         return fig_names
 
 
@@ -126,8 +128,8 @@ if __name__ == '__main__':
     if button == True:
         setup = Setup(stocks=stocks, days=data_days)
         data = setup.data_pull()
-        pvalue, crit = setup.calc_coint()
-        if pvalue < crit:
+        trace, crit = setup.calc_johansen()
+        if any(trace > crit):
             zscore = setup.calc_spread()
 
             trade = TradeBacktest(zscore=zscore, data=data)
