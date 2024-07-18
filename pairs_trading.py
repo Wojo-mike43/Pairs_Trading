@@ -101,7 +101,6 @@ class TradeBacktest:
         pf.plotting.plot_drawdown_periods(strategy_returns)
         plt.savefig(fig_names[2])
         plt.close()
-
         return fig_names
 
 
@@ -128,7 +127,7 @@ if __name__ == '__main__':
         setup = Setup(stocks=stocks, days=data_days)
         data = setup.data_pull()
         pvalue, crit = setup.calc_coint()
-        if pvalue < crit: #FLIP SIGN BACK AFTER TESTING#
+        if pvalue < crit:
             zscore = setup.calc_spread()
 
             trade = TradeBacktest(zscore=zscore, data=data)
