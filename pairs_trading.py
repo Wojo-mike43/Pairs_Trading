@@ -62,7 +62,7 @@ class TradeBacktest:
         self.port.loc[self.port['zscore'] > 1.5, 'signal'] = -1
         self.port.loc[self.port['zscore'] < -1.5, 'signal'] = 1
         self.port.loc[(self.port['zscore'] >= -0.5) & (self.port['zscore'] <= 0.5), 'signal'] = 0
-        
+
         self.port['position'] = self.port['signal']
         for i in range(len(self.port)):
             if self.port['position'].iloc[i] == 2:
@@ -90,7 +90,7 @@ class TradeBacktest:
         pf.plotting.plot_rolling_returns(strategy_returns)
         plt.savefig(fig_names[0])
         plt.close()
-        
+
         #Rolling Sharpe
         plt.figure(figsize=(14, 8))
         pf.plotting.plot_rolling_sharpe(strategy_returns)
