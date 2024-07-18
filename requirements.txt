@@ -3,6 +3,6 @@ yfinance
 numpy
 pandas
 statsmodels
+pyfolio
 matplotlib
 streamlit
-pyfolio
