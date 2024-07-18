@@ -1,6 +1,6 @@
 datetime
 yfinance
-numpy>=1.21
+numpy
 pandas
 statsmodels
 pyfolio_reloaded
