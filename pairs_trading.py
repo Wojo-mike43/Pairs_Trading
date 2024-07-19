@@ -12,15 +12,15 @@ class Setup:
     def __init__(self, stocks, days):
         self.data = None
         self.days = days
-        self.stocks = ['HD', 'LOW']
+        self.stocks = stocks
 
     def data_pull(self):
         today = dt.datetime.today()
         start = today - dt.timedelta(self.days)
         tickers = yf.Tickers(self.stocks)
-        stocks_data = tickers.history(start=start, end=today)
+        stocks_data = tickers.history(period = '1d')
         self.data = stocks_data['Close']
-        return self.data
+        return None
 
     def calc_johansen(self):
         result = coint_johansen(self.data, det_order=0, k_ar_diff=1)
