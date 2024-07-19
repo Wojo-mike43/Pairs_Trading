@@ -8,19 +8,20 @@ import pyfolio as pf
 import matplotlib.pyplot as plt
 import streamlit as st
 
-
-def data_pull(stocks, days):
-    today = dt.datetime.today()
-    start = today - dt.timedelta(days)
-    tickers = yf.Tickers(stocks)
-    stocks_data = tickers.history(start=start, end=today)
-    data = stocks_data['Close']
-    return data
-
 class Setup:
-    def __init__(self, data):
-        self.data = data
-    
+    def __init__(self, stocks, days):
+        self.data = None
+        self.days = days
+        self.stocks = stocks
+
+    def data_pull(self):
+        today = dt.datetime.today()
+        start = today - dt.timedelta(self.days)
+        tickers = yf.Tickers(self.stocks)
+        stocks_data = tickers.history(start=start, end=today)
+        self.data = stocks_data['Close']
+        return self.data
+
     def calc_johansen(self):
         result = coint_johansen(self.data, det_order=0, k_ar_diff=1)
         trace_stat = result.lr1
@@ -126,8 +127,8 @@ if __name__ == '__main__':
             unsafe_allow_html=True)
 
     if button == True:
-        data = data_pull(stocks=stocks,days=data_days)
-        setup = Setup(data=data)
+        setup = Setup(stocks=stocks, days=data_days)
+        data = setup.data_pull()
         trace, crit = setup.calc_johansen()
         if any(trace > crit):
             zscore = setup.calc_spread()
