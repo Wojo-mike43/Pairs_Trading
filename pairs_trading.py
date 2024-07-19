@@ -18,7 +18,7 @@ class Setup:
         today = dt.datetime.today()
         start = today - dt.timedelta(self.days)
         tickers = yf.Tickers(self.stocks)
-        stocks_data = tickers.history(period = '1d')
+        stocks_data = tickers.history(start=start, end=today)
         self.data = stocks_data['Close']
         return None
 
