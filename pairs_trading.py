@@ -7,6 +7,7 @@ from statsmodels.tsa.vector_ar.vecm import coint_johansen
 import pyfolio as pf
 import matplotlib.pyplot as plt
 import streamlit as st
+yf.pdr_override() 
 
 class Setup:
     def __init__(self, stocks, days):
