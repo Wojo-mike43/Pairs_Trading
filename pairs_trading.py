@@ -20,7 +20,7 @@ class Setup:
         tickers = yf.Tickers(self.stocks)
         stocks_data = tickers.history(start=start, end=today)
         self.data = stocks_data['Close']
-        return self.data
+        return None
 
     def calc_johansen(self):
         result = coint_johansen(self.data, det_order=0, k_ar_diff=1)
