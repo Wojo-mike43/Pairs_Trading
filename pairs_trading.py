@@ -12,7 +12,7 @@ class Setup:
     def __init__(self, stocks, days):
         self.data = None
         self.days = days
-        self.stocks = stocks
+        self.stocks = ['HD', 'LOW']
 
     def data_pull(self):
         today = dt.datetime.today()
