@@ -28,7 +28,7 @@ class Setup:
         crit_value = result.cvt[:, 1]
         return trace_stat, crit_value
 
-    def calc_spread(self): #eliminate lookback bias here
+    def calc_spread(self):
         self.stock1_data = self.data.iloc[:, 0]
         self.stock2_data = self.data.iloc[:, 1]
         ln_stock_1 = np.log(self.stock1_data)
