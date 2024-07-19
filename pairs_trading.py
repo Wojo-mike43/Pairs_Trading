@@ -84,7 +84,8 @@ class TradeBacktest:
 
     @staticmethod
     def plot(strategy_returns):
-        fig_names = ['cumulative_returns.png', 'rolling_sharpe.png', 'drawdown.png']
+        #fig_names = ['cumulative_returns.png', 'rolling_sharpe.png', 'drawdown.png']
+        fig_names = ['cumulative_returns.png', 'rolling_sharpe.png']
 
         #returns
         plt.figure(figsize=(14, 8))
@@ -99,10 +100,10 @@ class TradeBacktest:
         plt.close()
 
         #Drawdown
-        plt.figure(figsize=(14, 8))
-        pf.plotting.plot_drawdown_periods(strategy_returns)
-        plt.savefig(fig_names[2])
-        plt.close()
+        #plt.figure(figsize=(14, 8))
+        #pf.plotting.plot_drawdown_periods(strategy_returns)
+        #plt.savefig(fig_names[2])
+        #plt.close()
 
         return fig_names
 
