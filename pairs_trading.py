@@ -75,7 +75,7 @@ class TradeBacktest:
         self.port['strategy_return'] = self.port['position'] * (self.port['s1_return'] - self.port['s2_return'])
         self.port['strategy_return'] = self.port['strategy_return'].fillna(0)
         self.port['cumulative_return'] = (self.port['strategy_return'] + 1).cumprod()
-        return self.port['strategy_return'].index(index=self.port)
+        return self.port['strategy_return']
 
     @staticmethod
     def risk_analysis(strategy_returns):
